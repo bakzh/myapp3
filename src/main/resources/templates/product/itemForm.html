@@ -8,29 +8,31 @@
   <title>상품 상세</title>
 </head>
 <body>
-  <div class="product-wrap">
-    <h3>상품 상세</h3>
-    <hr>
-    <form action="" method="post">
+<div class="product-wrap">
+  <h3>상품 상세</h3>
+  <hr>
+  <form method="post" action="" >
+    <div>
+      <div><label for="">상품아이디</label><input type="text" readonly th:value="${itemForm.productId}"></div>
+      <div><label for="">상품명</label><input type="text" readonly th:value="${itemForm.pname}"></div>
+      <div><label for="">수량</label><input type="text" readonly th:value="${itemForm.quantity}"></div>
+      <div><label for="">가격</label><input type="text" readonly th:value="${itemForm.price}"></div>
       <div>
-        <div><label for="">상품아이디</label><input type="text" readonly></div>
-        <div><label for="">상품명</label><input type="text" readonly></div>
-        <div><label for="">수량</label><input type="text" readonly></div>
-        <div><label for="">가격</label><input type="text" readonly></div>
-        <div>
-          <button id="editBtn">수정</button>
-          <button id="delBtn">삭제</button>
-          <button id="listBtn">목록</button>
-        </div>
+        <button id="editBtn">수정</button>
+        <button id="delBtn">삭제</button>
+        <button id="listBtn">목록</button>
       </div>
-    </form>
-  </div>
+    </div>
+  </form>
+</div>
 <script>
-  editBtn.addEventListener('click' e=> {
-    location.href = '/product/{pid}/edit';
+  editBtn.addEventListener('click',e=>{
+    location.href = '/
   });
-  delBtn.addEventListener('click' e=> {});
-  listBtn.addEventListener('click' e=> {});
+  delBtn.addEventListener('click',e=>{
+  });
+  listBtn.addEventListener('click',e=>{
+  });
 </script>
 </body>
 </html>
