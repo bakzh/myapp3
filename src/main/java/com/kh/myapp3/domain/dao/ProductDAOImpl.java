@@ -3,6 +3,7 @@ package com.kh.myapp3.domain.dao;
 import com.kh.myapp3.domain.Product;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 
 @Slf4j
 @Repository
@@ -52,9 +54,9 @@ public class ProductDAOImpl implements ProductDAO{
 
   //등록
   @Override
-  public Integer save(Product product) {
+  public Product save(Product product) {
     StringBuffer sql = new StringBuffer();
-    sql.append("insert into product values(PRODUCT_PRODUCT_ID_SEQ.nextval,?,?,?)");
+    sql.append("insert into product values(PRODUCT_PRODUCT_ID_SEQ.nextval, ?, ?, ? )");
 
     KeyHolder keyHolder = new GeneratedKeyHolder();
     jt.update(new PreparedStatementCreator(){
@@ -70,9 +72,70 @@ public class ProductDAOImpl implements ProductDAO{
       }
     }, keyHolder);
 
-    Integer product_id = Integer.valueOf(keyHolder.getKeys().get("product_id").toString());
+    Long product_id = Long.valueOf(keyHolder.getKeys().get("product_id").toString());
 
-    return product_id;
+    product.setProductId(product_id);
+    return product;
+  }
+
+  //조회
+  @Override
+  public Product findById(Long productId) {
+    StringBuffer sql = new StringBuffer();
+    sql.append("select product_id, pname, quantity, price ");
+    sql.append(" from product ");
+    sql.append(" where product_id = ? ");
+
+    Product product = jt.queryForObject(sql.toString(),Product.class,productId);
+    return product;
+  }
+
+  //수정
+  @Override
+  public void update(Long productId, Product product) {
+    StringBuffer sql = new StringBuffer();
+
+    sql.append("update product ");
+    sql.append("   set pname = ?, ");
+    sql.append("       quantity = ?, ");
+    sql.append("       price = ? ");
+    sql.append(" where product_id = ? ");
+
+    jt.update(sql.toString(),product.getPname(),product.getQuantity(),product.getPrice(),productId);
+  }
+
+  //삭제
+  @Override
+  public void delete(Long productId) {
+    String sql = "delete from product where product_id = ? ";
+
+    jt.update(sql,productId);
+  }
+
+  //목록
+  @Override
+  public List<Product> findAll() {
+    StringBuffer sql = new StringBuffer();
+
+    sql.append("select product_id, pname, quantity, price ");
+    sql.append("  from product ");
+
+    //case1)자동매핑 sql결과 레코드와 동일한 구조의 java객체가 존재할 경우
+    List<Product> result = jt.query(sql.toString(),new BeanPropertyRowMapper<Product>());
+    //case2)수동매핑 sql결과 레코드의 컬럼명과 java객체의 멤버이름이 다른경우 or 타입이 다른경우
+//    List<Product> result =
+//          jt.query(sql.toString(), new RowMapper<Product>() {
+//
+//            @Override
+//            public Product mapRow(ResultSet rs, int rowNum) throws SQLException {
+//              Product product = new Product();
+//              product.setProductId(rs.getLong("product_id"));
+//              product.setQuantity(rs.getInt("quantity"));
+//              product.setPrice(rs.getInt("price"));
+//              return product;
+//            }
+//          });
+    return result;
   }
 
 //  //등록

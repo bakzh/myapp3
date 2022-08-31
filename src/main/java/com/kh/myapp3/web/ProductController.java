@@ -6,70 +6,82 @@ import com.kh.myapp3.web.form.SaveForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Slf4j
 @Controller
-@RequestMapping("/product")
+@RequestMapping("/products")
 @RequiredArgsConstructor
 public class ProductController {
 
   private final ProductSVC productSVC;
 
   //등록양식
-  @GetMapping
-  public String saveForm(){
+  @GetMapping("/add")
+  public String addForm(){
 
-    return "product/saveForm"; //상품등록 view
+    return "product/addForm"; //상품등록 view
   }
 
   //등록처리
-  @PostMapping
-  public String saver(SaveForm saveForm){
-    log.info("saveForm{}",saveForm);
+  @PostMapping("/add")
+  public String add(SaveForm saveForm){
+    log.info("saveForm:{}",saveForm);
 
     Product product = new Product();
     product.setPname(saveForm.getPname());
     product.setQuantity(saveForm.getQuantity());
     product.setPrice(saveForm.getPrice());
 
-    Integer productId = productSVC.save(product);
+    Product savedProduct = productSVC.save(product);
 
-    return "redirect:/product/"+productId; //상품상세 view
+    return "redirect:/products/"+savedProduct.getProductId(); //상품상세 view
   }
 
   //상품개별조회
   @GetMapping("/{pid}")
-  public String findByProductId(@PathVariable("pid") String pid){
+  public String findById(
+          @PathVariable("pid") String pid,
+          Model model
+  ){
     //db에서 상품조회
 
-    return "product/detailForm"; //상품 상세 view
+
+    Product product = new Product();
+    model.addAttribute("product",product);
+
+    return "product/itemForm"; //상품 상세 view
   }
 
-  //상품수정양식
+  //수정양식
   @GetMapping("/{pid}/edit")
-  public String updateForm(){
+  public String editForm(){
 
-    return "product/updateForm"; //상품 수정 view
+    return "product/editForm"; //상품 수정 view
   }
 
   //수정처리
   @PostMapping("/{pid}/edit")
-  public String update(){
+  public String edit(){
 
-    return "redirect:/product/1"; //상품 상세 view
+    return "redirect:/products/1"; //상품 상세 view
   }
 
   //삭제처리
-  @PostMapping("/{pid}/del")
-  public String delete(){
+  @GetMapping("/{pid}/del")
+  public String del(){
 
-    return "redirect:/product/all"; //전체 목록 view
+    return "redirect:/products"; //전체 목록 view
   }
 
-  @GetMapping("/all")
-  public String list(){
+  //목록화면
+  @GetMapping
+  public String all(){
 
-    return "/product/all";
+    return "product/all"; //전체목록 view
   }
 }
