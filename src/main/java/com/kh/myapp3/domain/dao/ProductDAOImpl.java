@@ -86,7 +86,8 @@ public class ProductDAOImpl implements ProductDAO{
     sql.append(" from product ");
     sql.append(" where product_id = ? ");
 
-    Product product = jt.queryForObject(sql.toString(),Product.class,productId);
+    Product product = jt.queryForObject(
+            sql.toString(),new BeanPropertyRowMapper<>(Product.class),productId);
     return product;
   }
 
