@@ -83,7 +83,7 @@ public class ProductDAOImpl implements ProductDAO{
 
     Product product = null;
     try {
-      product = jt.queryForObject(
+      product = jt.queryForObject(  //단일레코드
               sql.toString(),new BeanPropertyRowMapper<>(Product.class),productId);
     } catch (EmptyResultDataAccessException e) {
       log.info("삭제대상 상품이 없습니다 상품아이디={}",productId);
@@ -149,7 +149,7 @@ public class ProductDAOImpl implements ProductDAO{
   @Override
   public Long generatePid() {
     String sql = "select product_product_id_seq.nextval from dual";
-    Long newProductId = jt.queryForObject(sql, Long.class);
+    Long newProductId = jt.queryForObject(sql, Long.class);   //단일레코드, 단일컬럼
     return newProductId;
   }
 }

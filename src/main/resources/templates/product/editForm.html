@@ -8,25 +8,28 @@
   <title>상품 수정</title>
 </head>
 <body>
-  <div class="product-wrap">
-    <h3>상품 수정</h3>
-    <hr>
-    <form action="" method="post">
+<div class="product-wrap">
+  <h3>상품 수정</h3>
+  <hr>
+  <form method="post" action="" >
+    <div>
+      <div><label for="">상품아이디</label><input type="text" readonly name="productId" th:value="${editForm.productId}"></div>
+      <div><label for="">상품명</label><input type="text" name="pname" th:value="${editForm.pname}"></div>
+      <div><label for="">수량</label><input type="text" name="quantity" th:value="${editForm.quantity}"></div>
+      <div><label for="">가격</label><input type="text" name="price" th:value="${editForm.price}"></div>
       <div>
-        <div><label for="">상품아이디</label><input type="text" readonly></div>
-        <div><label for="">상품명</label><input type="text"></div>
-        <div><label for="">수량</label><input type="text"></div>
-        <div><label for="">가격</label><input type="text"></div>
-        <div>
-          <button id="cancelBtn">취소</button>
-          <button id="editBtn">저장</button>
-        </div>
+        <button id="cancelBtn" type="button">취소</button>
+        <button id="editBtn">저장</button>
       </div>
-    </form>
-  </div>
+    </div>
+  </form>
+</div>
 <script>
-  editBtn.addEventListener('click' e=> {
-    location.href = '/product/{pid}/edit';
+  //취소시 상세화면 이동
+  cancelBtn.addEventListener('click',e=>{
+    const productId = document.querySelector('input[name=productId]').value;
+    const url = `/products/${productId}`;
+    location.href = url;
   });
 </script>
 </body>
