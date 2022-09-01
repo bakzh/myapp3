@@ -118,7 +118,3 @@ public class ProductController {
     return "product/all"; //전체목록 view
   }
 }
-
-
-
-
