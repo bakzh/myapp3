@@ -113,7 +113,7 @@ public class MemberDAOImpl implements MemberDAO{
   public List<Member> all() {
 
     StringBuffer sql = new StringBuffer();
-    sql.append("select member_id,email,pw,nickname ");
+    sql.append("select member_id,email,pw,nickname,cdate,udate ");
     sql.append("  from member ");
 
     return jt.query(sql.toString(), new BeanPropertyRowMapper<>(Member.class));

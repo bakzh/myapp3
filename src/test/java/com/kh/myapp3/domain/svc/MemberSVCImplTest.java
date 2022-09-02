@@ -22,12 +22,13 @@ class MemberSVCImplTest {
   @DisplayName("가입")
   @Order(1)
   void insert() {
-    member = new Member("test@test.com","1234","별칭1");
+    Member newMember = new Member("test18@test.com","1234","별칭5");
 
-    Member insertedMember = memberSVC.insert(member);
-    Assertions.assertThat(insertedMember.getEmail()).isEqualTo(member.getEmail());
-    Assertions.assertThat(insertedMember.getPw()).isEqualTo(member.getPw());
-    Assertions.assertThat(insertedMember.getNickname()).isEqualTo(member.getNickname());
+    member = memberSVC.insert(newMember);
+    log.info("insertedMember={}",member);
+    Assertions.assertThat(member.getEmail()).isEqualTo(newMember.getEmail());
+    Assertions.assertThat(member.getPw()).isEqualTo(newMember.getPw());
+    Assertions.assertThat(member.getNickname()).isEqualTo(newMember.getNickname());
   }
 
   @Test
@@ -37,6 +38,7 @@ class MemberSVCImplTest {
 
     Member findedMember = memberSVC.findById(member.getMemberId());
     Assertions.assertThat(findedMember).isEqualTo(member);
+
   }
 
   @Test
@@ -45,26 +47,18 @@ class MemberSVCImplTest {
   void update() {
     String pw = "9999";
     String nickname = "별칭9999";
+
     //수정 정보
     Member m = new Member();
     m.setPw(pw);
     m.setNickname(nickname);
     //수정
-    memberSVC.update(member.getMemberId(), m);
+    memberSVC.update(member.getMemberId(),m);
     //조회
     Member findedMember = memberSVC.findById(member.getMemberId());
     //비교
     Assertions.assertThat(findedMember.getPw()).isEqualTo(pw);
     Assertions.assertThat(findedMember.getNickname()).isEqualTo(nickname);
-  }
-
-  @Test
-  @DisplayName("전체 목록")
-  @Order(4)
-  void all() {
-    List<Member> list = memberSVC.all();
-    Member findedMember = memberSVC.findById(member.getMemberId());
-    Assertions.assertThat(list).containsAnyOf(findedMember);
   }
 
   @Test
@@ -76,4 +70,12 @@ class MemberSVCImplTest {
     Assertions.assertThat(findedMember).isNull();
   }
 
+  @Test
+  @DisplayName("목록")
+  @Order(4)
+  void all() {
+    List<Member> list = memberSVC.all();
+    Member findedMember = memberSVC.findById(member.getMemberId());
+    Assertions.assertThat(list).containsAnyOf(findedMember);
+  }
 }
