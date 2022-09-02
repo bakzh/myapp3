@@ -1,6 +1,5 @@
 package com.kh.myapp3.domain.dao;
 
-import com.kh.myapp3.domain.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -8,6 +7,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.kh.myapp3.domain.Member;
 import java.util.List;
 
 @Slf4j
@@ -16,6 +16,7 @@ import java.util.List;
 public class MemberDAOImpl implements MemberDAO{
 
   private final JdbcTemplate jt;
+
   /**
    * 가입
    *
@@ -27,7 +28,7 @@ public class MemberDAOImpl implements MemberDAO{
     int result = 0;
     StringBuffer sql = new StringBuffer();
     sql.append("insert into member (member_id,email,pw,nickname) ");
-    sql.append(" VALUES(?,?,?,?) ");
+    sql.append("values(?,?,?,?) ");
 
     result = jt.update(sql.toString(), member.getMemberId(), member.getEmail(), member.getPw(), member.getNickname());
 
@@ -35,17 +36,17 @@ public class MemberDAOImpl implements MemberDAO{
   }
 
   /**
-   * 신규 회원아이디 생성
-   * @return  회원아이디(내부관리용)
+   * 신규 회원아이디(내부관리용) 생성
+   * @return 회원아이디
    */
-  public Long generatedMemberId(){
-    String sql = "select MEMBER_MEMBER_ID_SEQ.nextval from dual ";
+  public Long generateMemberId(){
+    String sql = "select member_member_id_seq.nextval from dual ";
     Long memberId = jt.queryForObject(sql, Long.class);
     return memberId;
   }
 
   /**
-   * 조회 by 회원 아이디
+   * 조회 by 회원아이디
    *
    * @param memberId 회원아이디
    * @return 회원정보
@@ -53,6 +54,7 @@ public class MemberDAOImpl implements MemberDAO{
   @Override
   public Member findById(Long memberId) {
     StringBuffer sql = new StringBuffer();
+
     sql.append("select member_id,email,pw,nickname,cdate,udate ");
     sql.append("  from member ");
     sql.append(" where member_id = ? ");
@@ -60,7 +62,7 @@ public class MemberDAOImpl implements MemberDAO{
     Member findedMember = null;
     try {
       //BeanPropertyRowMapper는 매핑되는 자바클래스에 디폴트생성자 필수!
-      findedMember = jt.queryForObject(sql.toString(), new BeanPropertyRowMapper<>(Member.class), memberId);
+      findedMember = jt.queryForObject(sql.toString(), new BeanPropertyRowMapper<>(Member.class),memberId);
     } catch (DataAccessException e) {
       log.info("찾고자하는 회원이 없습니다!={}",memberId);
     }
@@ -80,23 +82,23 @@ public class MemberDAOImpl implements MemberDAO{
     StringBuffer sql = new StringBuffer();
     sql.append("update member ");
     sql.append("   set pw = ?, ");
-    sql.append("       nickname =  ?, ");
+    sql.append("       nickname = ?, ");
     sql.append("       udate = systimestamp ");
     sql.append(" where member_id = ? ");
 
-    result = jt.update(sql.toString(), member.getPw(), member.getNickname(), memberId);
+    result = jt.update(sql.toString(),member.getPw(), member.getNickname(),memberId);
     return result;
   }
 
   /**
    * 탈퇴
    *
-   * @param memberId 회원아이디
+   * @param memberId 아이디
    */
   @Override
   public int del(Long memberId) {
     int result = 0;
-    String sql = "delete from member where memberId = ? ";
+    String sql = "delete from member where member_id = ? ";
 
     result = jt.update(sql, memberId);
     return result;
@@ -105,13 +107,15 @@ public class MemberDAOImpl implements MemberDAO{
   /**
    * 목록
    *
-   * @return 회원 전체
+   * @return 회원전체
    */
   @Override
   public List<Member> all() {
+
     StringBuffer sql = new StringBuffer();
     sql.append("select member_id,email,pw,nickname ");
     sql.append("  from member ");
+
     return jt.query(sql.toString(), new BeanPropertyRowMapper<>(Member.class));
   }
 }

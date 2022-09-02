@@ -13,7 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MemberSVCImpl implements MemberSVC{
 
-  private MemberDAO memberDAO;
+  private final MemberDAO memberDAO;
 
   /**
    * 가입
@@ -24,15 +24,15 @@ public class MemberSVCImpl implements MemberSVC{
   @Override
   public Member insert(Member member) {
 
-    //회원아이디 생성
-    Long generatedMemberId = memberDAO.generatedMemberId();
-    member.setMemberId(generatedMemberId);
+    //회원 아이디 생성
+    Long generateMemberId = memberDAO.generateMemberId();
+    member.setMemberId(generateMemberId);
     memberDAO.insert(member);
-    return memberDAO.findById(generatedMemberId);
+    return memberDAO.findById(generateMemberId);
   }
 
   /**
-   * 조회 by 회원 아이디
+   * 조회 by 회원아이디
    *
    * @param memberId 회원아이디
    * @return 회원정보
@@ -52,25 +52,25 @@ public class MemberSVCImpl implements MemberSVC{
   @Override
   public void update(Long memberId, Member member) {
     int cnt = memberDAO.update(memberId, member);
-    log.info("수정건수={}", cnt);
+    log.info("수정건수={}",cnt);
   }
 
   /**
    * 탈퇴
    *
-   * @param memberId 회원아이디
+   * @param memberId 아이디
    * @return 삭제건수
    */
   @Override
   public void del(Long memberId) {
     int cnt = memberDAO.del(memberId);
-    log.info("삭제건수={}",cnt);
+    log.info("삭제건수={}", cnt);
   }
 
   /**
    * 목록
    *
-   * @return 회원 전체
+   * @return 회원전체
    */
   @Override
   public List<Member> all() {
