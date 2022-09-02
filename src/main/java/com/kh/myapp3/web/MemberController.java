@@ -28,7 +28,7 @@ public class MemberController {
   @GetMapping("/add")
   public String insertForm(){
 
-    return "members/joinForm";   //가입 view
+    return "member/joinForm";   //가입 view
   }
 
   //가입처리
@@ -63,7 +63,7 @@ public class MemberController {
     memberForm.setNickname(findedProduct.getNickname());
 
     //view에서 참조하기위에 model객체에 저장
-    model.addAttribute("memberForm",memberForm);
+    model.addAttribute("MemberForm",memberForm);
 
     return "member/memberForm"; //멤버 상세 view
   }
@@ -81,7 +81,7 @@ public class MemberController {
     memberEditForm.setPw(findedProduct.getPw());
     memberEditForm.setNickname(findedProduct.getNickname());
 
-    model.addAttribute("memberEditForm",memberEditForm);
+    model.addAttribute("MemberEditForm",memberEditForm);
 
     return "member/editForm";  //멤버 수정 view
   }
