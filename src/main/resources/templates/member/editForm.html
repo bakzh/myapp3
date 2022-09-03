@@ -14,9 +14,9 @@
   <form method="post" action="" >
     <div>
       <div><label for="">회원아이디</label><input type="text" readonly name="memberId" th:value="${MemberEditForm.memberId}"></div>
-      <div><label for="">이메일</label><input type="text" name="pname" th:value="${MemberEditForm.email}"></div>
-      <div><label for="">비밀번호</label><input type="text" name="quantity" th:value="${MemberEditForm.pw}"></div>
-      <div><label for="">닉네임</label><input type="text" name="price" th:value="${MemberEditForm.nickname}"></div>
+      <div><label for="">이메일</label><input type="text" name="email" th:value="${MemberEditForm.email}"></div>
+      <div><label for="">비밀번호</label><input type="text" name="pw" th:value="${MemberEditForm.pw}"></div>
+      <div><label for="">닉네임</label><input type="text" name="nickname" th:value="${MemberEditForm.nickname}"></div>
       <div>
         <button id="cancelBtn" type="button">취소</button>
         <button id="editBtn">저장</button>
