@@ -30,11 +30,12 @@ public interface MemberDAO {
   int update(Long memberId, Member member);
 
   /**
-   * 탈퇴
-   * @param memberId 아이디
-   * @return 삭제건수
+   *
+   * @param memberId
+   * @param pw
+   * @return
    */
-  int del(Long memberId);
+  int del(Long memberId, String pw);
 
   /**
    * 목록

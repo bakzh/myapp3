@@ -65,7 +65,7 @@ class MemberSVCImplTest {
   @DisplayName("삭제")
   @Order(5)
   void del() {
-    memberSVC.del(member.getMemberId());
+    memberSVC.del(member.getMemberId(), member.getPw());
     Member findedMember = memberSVC.findById(member.getMemberId());
     Assertions.assertThat(findedMember).isNull();
   }

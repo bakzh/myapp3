@@ -1,20 +1,15 @@
 package com.kh.myapp3.web;
 
+
 import com.kh.myapp3.domain.Member;
 import com.kh.myapp3.domain.svc.MemberSVC;
-import com.kh.myapp3.web.form.JoinForm;
-import com.kh.myapp3.web.form.MemberEditForm;
-import com.kh.myapp3.web.form.MemberForm;
+import com.kh.myapp3.web.form.member.AddForm;
+import com.kh.myapp3.web.form.member.EditForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @Controller
@@ -24,96 +19,83 @@ public class MemberController {
 
   private final MemberSVC memberSVC;
 
-  //가입양식
+  //가입화면
   @GetMapping("/add")
-  public String insertForm(){
+  public String addForm(){
 
-    return "member/joinForm";   //가입 view
+    return "member/addForm";
   }
 
   //가입처리
   @PostMapping("/add")
-  public String insert(JoinForm joinForm){
-    log.info("joinForm:{}", joinForm);
+  public String add(AddForm addForm){
+    //검증
+    log.info("addForm={}",addForm);
 
     Member member = new Member();
-    member.setEmail(joinForm.getEmail());
-    member.setPw(joinForm.getPw());
-    member.setNickname(joinForm.getNickname());
+    member.setEmail(addForm.getEmail());
+    member.setPw(addForm.getPw());
+    member.setNickname(addForm.getNickname());
+    memberSVC.insert(member);
 
-    Member insertedMember = memberSVC.insert(member);
-
-    return "redirect:/members/"+insertedMember.getMemberId();  //멤버상세 요청 url
+    return "login/loginForm"; //로긴 화면
   }
-
-  //멤버개별조회
+  //조회화면
   @GetMapping("/{id}")
-  public String findByMemberId(
-          @PathVariable("id") Long mid,
-          Model model
-  ){
-    //db에서 상품조회
-    Member findedProduct = memberSVC.findById(mid);
+  public String findById(){
 
-    //Member => ItemForm 복사
-    MemberForm memberForm = new MemberForm();
-    memberForm.setMemberId(findedProduct.getMemberId());
-    memberForm.setEmail(findedProduct.getEmail());
-    memberForm.setPw(findedProduct.getPw());
-    memberForm.setNickname(findedProduct.getNickname());
-
-    //view에서 참조하기위에 model객체에 저장
-    model.addAttribute("MemberForm",memberForm);
-
-    return "member/memberForm"; //멤버 상세 view
+    return "member/memberForm"; //회원 상세화면
   }
-
-  //수정양식
+  //수정화면
   @GetMapping("/{id}/edit")
-  public String updateForm(@PathVariable("id") Long id, Model model){
+  public String editForm(@PathVariable("id") Long id, Model model){
 
-    Member findedProduct = memberSVC.findById(id);
+    Member findedMember = memberSVC.findById(id);
+    EditForm editForm = new EditForm();
 
-    //Member => EditForm 변환
-    MemberEditForm memberEditForm = new MemberEditForm();
-    memberEditForm.setMemberId(findedProduct.getMemberId());
-    memberEditForm.setEmail(findedProduct.getEmail());
-    memberEditForm.setPw(findedProduct.getPw());
-    memberEditForm.setNickname(findedProduct.getNickname());
+    editForm.setEmail(findedMember.getEmail());
+    editForm.setPw(findedMember.getPw());
+    editForm.setNickname(findedMember.getNickname());
 
-    model.addAttribute("MemberEditForm",memberEditForm);
-
-    return "member/editForm";  //멤버 수정 view
+    model.addAttribute("EditForm",editForm);
+    return "member/editForm";
   }
-
   //수정처리
   @PostMapping("/{id}/edit")
-  public String update(@PathVariable("id") Long id, MemberEditForm memberEditForm){
+  public String edit(@PathVariable("id") Long id, EditForm editForm) {
 
     Member member = new Member();
-    member.setMemberId(id);
-    member.setEmail(memberEditForm.getEmail());
-    member.setPw(memberEditForm.getPw());
-    member.setNickname(memberEditForm.getNickname());
+    member.setPw(editForm.getPw());
+    member.setNickname(editForm.getNickname());
 
-    memberSVC.update(id,member);
-    return "redirect:/members/" + id; //멤버 상세 url
+    int updatedRow = memberSVC.update(id,member);
+    if(updatedRow == 0) {
+      return "member/editForm";
+    }
+    return "redirect: members/{id}";
   }
-
-  //삭제처리
+  //탈퇴화면
   @GetMapping("/{id}/del")
-  public String del(@PathVariable("id") Long id){
+  public String delForm(){
 
-    memberSVC.del(id);
-    return "redirect:/members"; // 전체 목록 view
+    return "member/delForm";  //회원 탈퇴화면
+  }
+  //탈퇴처리
+  @PostMapping("/{id}/del")
+  public String del(@PathVariable("id") Long id, @RequestParam("pw") String pw){
+    int deleteRow = memberSVC.del(id,pw);
+    if(deleteRow == 0){
+      return "member/delForm";
+    }
+
+    return "redirect:/";
   }
 
   //목록화면
-  @GetMapping
-  public String list(Model model){
+  @GetMapping("/all")
+  public String all(){
 
-    List<Member> list = memberSVC.all();
-    model.addAttribute("list",list);
-    return "member/all"; //전체목록 view
+    return "member/all";
   }
 }
+
