@@ -1,6 +1,5 @@
 package com.kh.myapp3.web;
 
-
 import com.kh.myapp3.domain.Member;
 import com.kh.myapp3.domain.svc.MemberSVC;
 import com.kh.myapp3.web.form.member.AddForm;
@@ -23,10 +22,9 @@ public class MemberController {
   @GetMapping("/add")
   public String addForm(){
 
-    return "member/addForm";
+    return "member/addForm";  //가입 화면
   }
-
-  //가입처리
+  //가입처리	POST	/members/add
   @PostMapping("/add")
   public String add(AddForm addForm){
     //검증
@@ -40,29 +38,24 @@ public class MemberController {
 
     return "login/loginForm"; //로긴 화면
   }
-  //조회화면
+
+  //조회화면	GET	/members/{id}
   @GetMapping("/{id}")
-  public String findById(){
+  public String findById() {
 
     return "member/memberForm"; //회원 상세화면
   }
-  //수정화면
+  //수정화면	GET	/members/{id}/edit
   @GetMapping("/{id}/edit")
   public String editForm(@PathVariable("id") Long id, Model model){
 
     Member findedMember = memberSVC.findById(id);
-    EditForm editForm = new EditForm();
-
-    editForm.setEmail(findedMember.getEmail());
-    editForm.setPw(findedMember.getPw());
-    editForm.setNickname(findedMember.getNickname());
-
-    model.addAttribute("EditForm",editForm);
-    return "member/editForm";
+    model.addAttribute("member", findedMember);
+    return "member/editForm"; //회원 수정화면
   }
-  //수정처리
+  //수정처리	POST	/members/{id}/edit
   @PostMapping("/{id}/edit")
-  public String edit(@PathVariable("id") Long id, EditForm editForm) {
+  public String edit(@PathVariable("id") Long id, EditForm editForm){
 
     Member member = new Member();
     member.setPw(editForm.getPw());
@@ -72,30 +65,26 @@ public class MemberController {
     if(updatedRow == 0) {
       return "member/editForm";
     }
-    return "redirect: members/{id}";
+    return "redirect:/members/{id}"; //회원 상세화면
   }
   //탈퇴화면
   @GetMapping("/{id}/del")
   public String delForm(){
-
-    return "member/delForm";  //회원 탈퇴화면
+    return "member/delForm"; //회원 탈퇴 화면
   }
-  //탈퇴처리
+  //탈퇴처리	GET	/members/{id}/del
   @PostMapping("/{id}/del")
   public String del(@PathVariable("id") Long id, @RequestParam("pw") String pw){
-    int deleteRow = memberSVC.del(id,pw);
-    if(deleteRow == 0){
+    int deletedRow = memberSVC.del(id,pw);
+    if(deletedRow == 0){
       return "member/delForm";
     }
-
     return "redirect:/";
   }
-
-  //목록화면
+  //목록화면	GET	/members
   @GetMapping("/all")
   public String all(){
 
     return "member/all";
   }
 }
-

@@ -30,6 +30,7 @@ public interface MemberSVC {
   /**
    * 탈퇴
    * @param memberId 아이디
+   * @param pw 비밀번호
    * @return 삭제건수
    */
   int del(Long memberId, String pw);

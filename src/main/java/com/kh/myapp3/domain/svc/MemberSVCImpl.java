@@ -60,7 +60,7 @@ public class MemberSVCImpl implements MemberSVC{
    * 탈퇴
    *
    * @param memberId 아이디
-   * @param pw
+   * @param pw 비밀번호
    * @return 삭제건수
    */
   @Override
