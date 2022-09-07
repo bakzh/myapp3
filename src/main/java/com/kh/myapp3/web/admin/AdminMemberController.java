@@ -1,4 +1,4 @@
-package com.kh.myapp3.web;
+package com.kh.myapp3.web.admin;
 
 import com.kh.myapp3.domain.Member;
 import com.kh.myapp3.domain.svc.MemberSVC;
@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @Controller
-@RequestMapping("/members")
+@RequestMapping("/admin/members")
 @RequiredArgsConstructor
-public class MemberController {
+public class AdminMemberController {
 
   private final MemberSVC memberSVC;
 
@@ -22,7 +22,7 @@ public class MemberController {
   @GetMapping("/add")
   public String addForm(){
 
-    return "member/addForm";  //가입 화면
+    return "admin/member/addForm";  //가입 화면
   }
   //가입처리	POST	/members/add
   @PostMapping("/add")
@@ -43,7 +43,7 @@ public class MemberController {
   @GetMapping("/{id}")
   public String findById() {
 
-    return "member/memberForm"; //회원 상세화면
+    return "admin/member/memberForm"; //회원 상세화면
   }
   //수정화면	GET	/members/{id}/edit
   @GetMapping("/{id}/edit")
@@ -51,7 +51,7 @@ public class MemberController {
 
     Member findedMember = memberSVC.findById(id);
     model.addAttribute("member", findedMember);
-    return "member/editForm"; //회원 수정화면
+    return "admin/member/editForm"; //회원 수정화면
   }
   //수정처리	POST	/members/{id}/edit
   @PostMapping("/{id}/edit")
@@ -63,22 +63,28 @@ public class MemberController {
 
     int updatedRow = memberSVC.update(id,member);
     if(updatedRow == 0) {
-      return "member/editForm";
+      return "admin/member/editForm";
     }
     return "redirect:/members/{id}"; //회원 상세화면
   }
   //탈퇴화면
   @GetMapping("/{id}/del")
   public String delForm(){
-    return "member/delForm"; //회원 탈퇴 화면
+    return "admin/member/delForm"; //회원 탈퇴 화면
   }
   //탈퇴처리	GET	/members/{id}/del
   @PostMapping("/{id}/del")
   public String del(@PathVariable("id") Long id, @RequestParam("pw") String pw){
     int deletedRow = memberSVC.del(id,pw);
     if(deletedRow == 0){
-      return "member/delForm";
+      return "admin/member/delForm";
     }
     return "redirect:/";
+  }
+  //목록화면	GET	/members
+  @GetMapping("/all")
+  public String all(){
+
+    return "admin/member/all";
   }
 }

@@ -1,16 +1,16 @@
-package com.kh.myapp3.domain.dao;
-
+package com.kh.myapp3.domain.admin;
 
 import com.kh.myapp3.domain.Member;
 
-public interface MemberDAO {
+import java.util.List;
 
+public interface AdminMemberSVC {
   /**
    * 가입
    * @param member 가입정보
-   * @return 가입건수
+   * @return 회원아이디
    */
-  int insert(Member member);
+  Member insert(Member member);
 
   /**
    * 조회 by 회원아이디
@@ -36,9 +36,9 @@ public interface MemberDAO {
   int del(Long memberId, String pw);
 
   /**
-   * 신규 회원아이디(내부관리용) 생성
-   * @return 회원아이디
+   * 목록
+   * @return 회원전체
    */
-  Long generateMemberId();
+  List<Member> all();
 
 }

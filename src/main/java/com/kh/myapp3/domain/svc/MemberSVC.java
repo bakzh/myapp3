@@ -2,8 +2,6 @@ package com.kh.myapp3.domain.svc;
 
 import com.kh.myapp3.domain.Member;
 
-import java.util.List;
-
 public interface MemberSVC {
   /**
    * 가입
@@ -34,11 +32,5 @@ public interface MemberSVC {
    * @return 삭제건수
    */
   int del(Long memberId, String pw);
-
-  /**
-   * 목록
-   * @return 회원전체
-   */
-  List<Member> all();
 
 }
