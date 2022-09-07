@@ -4,7 +4,7 @@ import com.kh.myapp3.domain.Member;
 import com.kh.myapp3.domain.admin.AdminMemberSVC;
 import com.kh.myapp3.web.admin.form.member.AddForm;
 import com.kh.myapp3.web.admin.form.member.EditForm;
-import com.kh.myapp3.web.form.member.MemberForm;
+import com.kh.myapp3.web.admin.form.member.MemberForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
