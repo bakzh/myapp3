@@ -29,10 +29,10 @@
       const url = [[@{|/admin/members/${memberForm.memberId}/edit|}]];
       location.href = url;
     });
-    delBtn.addEventListener('click',e => {
+    delBtn.addEventListener('click',e=>{
       console.log('삭제');
       if(!confirm('삭제하시겠습니까?')) return;
-    location.href = [[@{|/admin/members/${memberForm.memberId}/del|}]];
+      location.href = [[@{|/admin/members/${memberForm.memberId}/del|}]];
     });
     listBtn.addEventListener('click',e => {
       console.log('목록');

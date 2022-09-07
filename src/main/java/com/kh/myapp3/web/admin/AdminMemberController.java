@@ -90,13 +90,13 @@ public class AdminMemberController {
   }
 
   //삭제처리
-  @PostMapping("/{id}/del")
+  @RequestMapping("/{id}/del")
   public String del(@PathVariable("id") Long id){
     int deletedRow = adminMemberSVC.del(id);
     if(deletedRow == 0){
-      return "redirect:/admin/members/" + id;
+      return "redirect:/admin/members/"+id; //회원 상세화면
     }
-    return "redirect:/admin/members/all";
+    return "redirect:/admin/members/all"; //회원 목록
   }
   //목록화면	GET	/members
   @GetMapping("/all")

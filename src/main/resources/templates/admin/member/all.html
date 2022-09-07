@@ -34,14 +34,27 @@
       </tr>
     </thead>
     <tbody>
-      <tr th:each="rec : ${list}">
+      <tr th:each="rec : ${list}" th:onclick="|location.href = '@{/admin/members/{id}(id=${rec.memberId})}'|">
         <td>[[${recStat.count}]]</td>
-        <td>[[${rec.memberId}]]</td>
+<!--        <td><a th:href="@{|/admin/members/${rec.memberId}|}">[[${rec.memberId}]]</a></td>-->
+        <td><!--<a th:href="@{/admin/members/{id}(id=${rec.memberId})}">-->[[${rec.memberId}]]<!--</a>--></td>
         <td>[[${rec.email}]]</td>
-        <td>[[${rec.cdate}]]</td>
-        <td>[[${rec.udate}]]</td>
+        <td>[[${#temporals.format(rec.cdate, 'yy-MM-dd HH:mm')}]]</td>
+        <td>[[${#temporals.format(rec.udate, 'yy-MM-dd HH:mm')}]]</td>
       </tr>
     </tbody>
   </table>
+  <button id="addBtn">회원등록</button>
+  <script th:inline="javascript">
+    addBtn.addEventListener('click',e=>{
+      location.href = '/admin/members/add';
+    });
+    const $tbody = document.querySelector("table tbody");
+    $tbody.addEventListener('click',e=>{
+     if(e.target.tagName == 'TD'){
+        console.log(e.target.parentElement.dataset.memberId);
+     }
+    });
+  </script>
 </body>
 </html>
