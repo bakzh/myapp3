@@ -1,9 +1,10 @@
 package com.kh.myapp3.web.admin;
 
 import com.kh.myapp3.domain.Member;
-import com.kh.myapp3.domain.svc.MemberSVC;
-import com.kh.myapp3.web.form.member.AddForm;
-import com.kh.myapp3.web.form.member.EditForm;
+import com.kh.myapp3.domain.admin.AdminMemberSVC;
+import com.kh.myapp3.web.admin.form.member.AddForm;
+import com.kh.myapp3.web.admin.form.member.EditForm;
+import com.kh.myapp3.web.form.member.MemberForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -16,15 +17,15 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AdminMemberController {
 
-  private final MemberSVC memberSVC;
+  private final AdminMemberSVC adminMemberSVC;
 
-  //가입화면
+  //등록화면
   @GetMapping("/add")
   public String addForm(){
 
     return "admin/member/addForm";  //가입 화면
   }
-  //가입처리	POST	/members/add
+  //등록처리	POST	/members/add
   @PostMapping("/add")
   public String add(AddForm addForm){
     //검증
@@ -34,22 +35,33 @@ public class AdminMemberController {
     member.setEmail(addForm.getEmail());
     member.setPw(addForm.getPw());
     member.setNickname(addForm.getNickname());
-    memberSVC.insert(member);
+    Member insertedMember = adminMemberSVC.insert(member);
 
-    return "login/loginForm"; //로긴 화면
+    return "redirect:/admin/members/" + insertedMember.getMemberId(); //회원 상세
   }
 
-  //조회화면	GET	/members/{id}
+  //조회화면
   @GetMapping("/{id}")
-  public String findById() {
+  public String findById(@PathVariable("id") Long id, Model model) {
 
+    Member findedMember = adminMemberSVC.findById(id);
+
+    MemberForm memberForm = new MemberForm();
+    memberForm.setMemberId(findedMember.getMemberId());
+    memberForm.setEmail(findedMember.getEmail());
+    memberForm.setPw(findedMember.getPw());
+    memberForm.setNickname(findedMember.getNickname());
+    memberForm.setCdate(findedMember.getCdate());
+    memberForm.setUdate(findedMember.getUdate());
+
+    model.addAttribute("memberForm",memberForm);
     return "admin/member/memberForm"; //회원 상세화면
   }
-  //수정화면	GET	/members/{id}/edit
+  //수정화면
   @GetMapping("/{id}/edit")
   public String editForm(@PathVariable("id") Long id, Model model){
 
-    Member findedMember = memberSVC.findById(id);
+    Member findedMember = adminMemberSVC.findById(id);
     model.addAttribute("member", findedMember);
     return "admin/member/editForm"; //회원 수정화면
   }
@@ -61,7 +73,7 @@ public class AdminMemberController {
     member.setPw(editForm.getPw());
     member.setNickname(editForm.getNickname());
 
-    int updatedRow = memberSVC.update(id,member);
+    int updatedRow = adminMemberSVC.update(id,member);
     if(updatedRow == 0) {
       return "admin/member/editForm";
     }
@@ -75,7 +87,7 @@ public class AdminMemberController {
   //탈퇴처리	GET	/members/{id}/del
   @PostMapping("/{id}/del")
   public String del(@PathVariable("id") Long id, @RequestParam("pw") String pw){
-    int deletedRow = memberSVC.del(id,pw);
+    int deletedRow = adminMemberSVC.del(id,pw);
     if(deletedRow == 0){
       return "admin/member/delForm";
     }
