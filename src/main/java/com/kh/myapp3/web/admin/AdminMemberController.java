@@ -11,6 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @Controller
 @RequestMapping("/admin/members")
@@ -62,7 +64,14 @@ public class AdminMemberController {
   public String editForm(@PathVariable("id") Long id, Model model){
 
     Member findedMember = adminMemberSVC.findById(id);
-    model.addAttribute("member", findedMember);
+
+    EditForm editForm = new EditForm();
+    editForm.setMemberId(findedMember.getMemberId());
+    editForm.setEmail(findedMember.getEmail());
+    editForm.setPw(findedMember.getPw());
+    editForm.setNickname(findedMember.getNickname());
+
+    model.addAttribute("editForm", editForm);
     return "admin/member/editForm"; //회원 수정화면
   }
   //수정처리	POST	/members/{id}/edit
@@ -77,25 +86,24 @@ public class AdminMemberController {
     if(updatedRow == 0) {
       return "admin/member/editForm";
     }
-    return "redirect:/members/{id}"; //회원 상세화면
+    return "redirect:admin/members/{id}"; //회원 상세화면
   }
-  //탈퇴화면
-  @GetMapping("/{id}/del")
-  public String delForm(){
-    return "admin/member/delForm"; //회원 탈퇴 화면
-  }
-  //탈퇴처리	GET	/members/{id}/del
+
+  //삭제처리
   @PostMapping("/{id}/del")
-  public String del(@PathVariable("id") Long id, @RequestParam("pw") String pw){
-    int deletedRow = adminMemberSVC.del(id,pw);
+  public String del(@PathVariable("id") Long id){
+    int deletedRow = adminMemberSVC.del(id);
     if(deletedRow == 0){
-      return "admin/member/delForm";
+      return "redirect:/admin/members/" + id;
     }
-    return "redirect:/";
+    return "redirect:/admin/members/all";
   }
   //목록화면	GET	/members
   @GetMapping("/all")
-  public String all(){
+  public String all(Model model){
+
+    List<Member> list = adminMemberSVC.all();
+    model.addAttribute("list",list);
 
     return "admin/member/all";
   }
