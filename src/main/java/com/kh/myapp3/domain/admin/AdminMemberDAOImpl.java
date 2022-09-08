@@ -1,7 +1,7 @@
 package com.kh.myapp3.domain.admin;
 
 import com.kh.myapp3.domain.Member;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -12,7 +12,7 @@ import java.util.List;
 
 @Slf4j
 @Repository
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class AdminMemberDAOImpl implements AdminMemberDAO{
   private final JdbcTemplate jt;
 
@@ -116,5 +116,18 @@ public class AdminMemberDAOImpl implements AdminMemberDAO{
     sql.append("  from member ");
 
     return jt.query(sql.toString(), new BeanPropertyRowMapper<>(Member.class));
+  }
+
+  /**
+   * 이메일 중복체크
+   *
+   * @param email 이메일
+   * @return 존재하면 true
+   */
+  @Override
+  public Boolean dupChkOfMemberEmail(String email) {
+    String sql = "select count(email) from member where email = ? ";
+    Integer rowCount = jt.queryForObject(sql, Integer.class, email);
+    return rowCount == 1 ? true : false;
   }
 }

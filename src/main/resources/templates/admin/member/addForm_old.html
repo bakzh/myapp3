@@ -18,14 +18,25 @@
   <h3 th:text="#{title.member.add}">회원등록</h3>
   <hr>
   <form id="frm" action="" method="post" th:object="${addForm}">
+    <div th:if="${#fields.hasGlobalErrors()}">
+      <p class="errmsg" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
+    </div>
     <div>
       <label for="" th:text="#{label.member.email}">이메일</label>
-      <input type="email" name="email" th:field="*{email}">
+      <input type="text" name="email" th:field="*{email}">
       <span class="errmsg"></span>
       <span th:errorclass="errmsg" th:errors="*{email}"></span>
     </div>
-    <div><label for="" th:text="#{label.member.pw}">비밀번호</label><input type="text" name="pw" th:field="*{pw}"></div>
-    <div><label for="" th:text="#{label.member.nickname}">별칭</label><input type="text" name="nickname" th:field="*{nickname}"></div>
+    <div>
+      <label for="" th:text="#{label.member.pw}">비밀번호</label>
+      <input type="text" name="pw" th:field="*{pw}">
+      <span th:errorclass="errmsg" th:errors="*{pw}"></span>
+    </div>
+    <div>
+      <label for="" th:text="#{label.member.nickname}">별칭</label>
+      <input type="text" name="nickname" th:field="*{nickname}">
+      <span th:errorclass="errmsg" th:errors="*{nickname}"></span>
+    </div>
     <div>
       <button id="addBtn" type="submit" th:text="#{btn.add}">등록</button>
       <button type="reset" th:text="#{btn.cancel}">취소</button>
