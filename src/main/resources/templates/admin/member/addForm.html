@@ -18,6 +18,14 @@
     ul,li{
       text-decoration:none;
     }
+    .fieldError{
+      border: 1px solid red;
+      color: red;
+    }
+    .fieldSuccess{
+      border: 1px solid blue;
+      color: blue;
+    }
   </style>
 </head>
 <body>
@@ -29,7 +37,7 @@
   </div>
   <div>
     <label for="" th:text="#{label.member.email}">이메일</label>
-    <input type="text" th:field="*{email}">
+    <input type="text" th:field="*{email}" th:class="${#fields.hasErrors('email')} ? fieldError ">
     <span class="errmsg"></span>
     <!--    <div><span th:errorclass="errmsg" th:errors="*{email}"></span></div>-->
     <ul th:if="${#fields.hasErrors('email')}" th:class="errmsg">
