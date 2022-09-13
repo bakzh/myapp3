@@ -7,12 +7,15 @@ import com.kh.myapp3.web.admin.form.member.EditForm;
 import com.kh.myapp3.web.admin.form.member.MemberForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -31,10 +34,12 @@ public class AdminMemberController {
   }
   //등록처리	POST	/members/add
   @PostMapping("/add")
-  public String add(@Valid @ModelAttribute("form") AddForm addForm,
-                    BindingResult bindingResult
+  public String add(
+          @Valid @ModelAttribute("form") AddForm addForm,
+          BindingResult bindingResult,
+          RedirectAttributes redirectAttributes // 리다이렉트할때 정보를 유지하기위해사용
   ){
-
+    //model.addAttribute("addForm",addForm);
     log.info("addForm={}",addForm);
 
     //검증
@@ -45,10 +50,9 @@ public class AdminMemberController {
     //회원아이디 중복체크
     Boolean isExist = adminMemberSVC.dupChkOfMemberEmail(addForm.getEmail());
     if(isExist){
-      bindingResult.rejectValue("email","dup.email","동일한 이메일이 존재합니다.");
+      bindingResult.rejectValue("email","dup.email", "동일한 이메일이 존재합니다.");
       return "admin/member/addForm";
     }
-
     //회원등록
     Member member = new Member();
     member.setEmail(addForm.getEmail());
@@ -57,7 +61,9 @@ public class AdminMemberController {
     Member insertedMember = adminMemberSVC.insert(member);
 
     Long id = insertedMember.getMemberId();
-    return "redirect:/admin/members/" + id; //회원 상세
+    redirectAttributes.addAttribute("id",id);
+
+    return "redirect:/admin/members/{id}"; //회원 상세
   }
 
   public String add2(@Valid @ModelAttribute AddForm addForm, BindingResult bindingResult){
@@ -122,11 +128,7 @@ public class AdminMemberController {
   }
   //수정화면
   @GetMapping("/{id}/edit")
-  public String editForm(
-          @PathVariable("id") Long id,
-          @Valid @ModelAttribute("form") EditForm editForm,
-          Model model
-  ){
+  public String editForm(@PathVariable("id") Long id, Model model){
 
     Member findedMember = adminMemberSVC.findById(id);
 
@@ -141,7 +143,16 @@ public class AdminMemberController {
   }
   //수정처리	POST	/members/{id}/edit
   @PostMapping("/{id}/edit")
-  public String edit(@PathVariable("id") Long id, EditForm editForm){
+  public String edit(
+          @PathVariable("id") Long id,
+          @Valid @ModelAttribute("form") EditForm editForm,
+          BindingResult bindingResult){
+
+    //검증
+    if(bindingResult.hasErrors()){
+      log.info("errors={}",bindingResult);
+      return "admin/member/editForm";
+    }
 
     Member member = new Member();
     member.setPw(editForm.getPw());
@@ -167,7 +178,19 @@ public class AdminMemberController {
   @GetMapping("/all")
   public String all(Model model){
 
-    List<Member> list = adminMemberSVC.all();
+    List<Member> members = adminMemberSVC.all();
+    List<MemberForm> list = new ArrayList<>();
+//    for(Member member : members){
+//      MemberForm memberForm = new MemberForm();
+//      BeanUtils.copyProperties(member,memberForm);
+//      list.add(memberForm);
+//    }
+    members.stream().forEach(member -> {
+      MemberForm memberForm = new MemberForm();
+      BeanUtils.copyProperties(member,memberForm);
+      list.add(memberForm);
+    });
+
     model.addAttribute("list", list);
     return "admin/member/all";
   }
