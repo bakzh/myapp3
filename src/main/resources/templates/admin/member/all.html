@@ -66,16 +66,22 @@
   <div><button id="addBtn">등록</button></div>
   </div>
 <script th:inline="javascript">
-    addBtn.addEventListener('click',e=>{
-      location.href = '/admin/members/add';
-    });
-    const $tbody = document.querySelector("table tbody");
-    $tbody.addEventListener('click',e=>{
-      if(e.target.tagName == 'TD'){
-        const memberId = e.target.parentElement.dataset.memberId;
-        location.href =  `/admin/members/${memberId}`;
-      }
-    });
+
+    //dom tree가 만들어지면 init호출
+    window.addEventListener('DOMContentLoaded',init);
+
+    function init(){
+      addBtn.addEventListener('click',e=>{
+        location.href = '/admin/members/add';
+      });
+      const $tbody = document.querySelector("table tbody");
+      $tbody.addEventListener('click',e=>{
+        if(e.target.tagName == 'TD'){
+          const memberId = e.target.parentElement.dataset.memberId;
+          location.href =  `/admin/members/${memberId}`;
+        }
+      });
+    };
   </script>
 </body>
 </html>
